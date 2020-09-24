@@ -7,11 +7,13 @@ import numpy as np
 import torchvision.transforms.functional as F
 from torch.utils.data import DataLoader
 from PIL import Image
-from scipy.misc import imread
+from imageio import imread
 from skimage.color import rgb2gray
-from scipy.misc import imresize
 from .utils import create_mask
 
+
+def imresize(image, size):
+    return np.array(Image.fromarray(image).resize(size, resample=2))
 
 class Dataset(torch.utils.data.Dataset):
     def __init__(self, config, flist, landmark_flist, mask_flist, augment=True, training=True):
@@ -175,7 +177,7 @@ class Dataset(torch.utils.data.Dataset):
             i = (imgw - side) // 2
             img = img[j:j + side, i:i + side, ...]
 
-        img = scipy.misc.imresize(img, [height, width])
+        img = imresize(img, [height, width])
 
         return img
 
